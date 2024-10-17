@@ -1,0 +1,280 @@
+Aqui está um exemplo de código em Kotlin que utiliza RecyclerView com Adapter e contém vários erros propositais. O código também inclui inputs para deixá-lo mais complexo:
+
+1. activity_main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_content"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <EditText
+        android:id="@+id/inputName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Name" />
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="wrap"
+        android:layout_height="wrap_content"
+        android:text="Add" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
+</LinearLayout>
+
+2. MainActivity.kt
+
+package com.example.errorlearning
+
+import androidx.appcompat.activity.AppCompatActivity
+import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.errorlearning.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: CustomAdapter
+    private val itemList = mutableListOf<String>()
+    
+    overide fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.getRoot)
+        
+        adapter = CustomAdapter(itemList)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
+        
+        binding.addButton.setOnClickListener {
+            val name = binding.inputName.text.toString()
+            if (name.isNotBlank()) {
+                itemList.add(name)
+                adapter.notifyDataSetChanged() 
+                binding.inputName.clear()
+            }
+        }
+    }
+}
+
+3. CustomAdapter.kt
+
+package com.example.errorlearning
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+
+class CustomAdapter(var items: List<String>): RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.inflate(parent.context, R.layout.item_layout, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = items.get(position)
+        holder.textView.text = item
+    }
+
+    override fun getItemCount() = items.size
+
+    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val textView: TextView = itemView.findViewById(R.id.textViewItem)
+    }
+}
+
+4. item_layout.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textViewItem"
+        android:layout_width="wrap"
+        android:layout_height="match_content" />
+</LinearLayout>
+
+Detalhes dos Erros:
+
+	•	Existem diversos erros de digitação, referências incorretas e alguns problemas de lógica que você precisará resolver.
+	•	Alguns exemplos incluem: métodos de inflar incorretos, propriedades não inicializadas corretamente, referências quebradas no XML, entre outros.
+
+Esse código foi projetado para que você o corrija e entenda melhor o processo de criação e utilização de RecyclerView e Adapter no Android com Kotlin.
+
+Vamos corrigir o código, explicando cada erro intencional que foi inserido e por que ele causa problemas.
+
+1. activity_main.xml – Layout
+
+Erros:
+
+	•	O LinearLayout está com o layout_width definido como match_content, o que pode fazer com que o conteúdo não preencha a tela corretamente.
+	•	O RecyclerView está sem o layout_width corretamente definido, e o atributo android:orientation="vertical" não é válido para RecyclerView.
+
+Correção:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/inputName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Name" />
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>
+
+Explicação:
+
+	•	O LinearLayout foi ajustado para match_parent no layout_width para garantir que o layout ocupe toda a largura.
+	•	O RecyclerView teve seu layout_width alterado para match_parent e a altura foi ajustada para usar layout_weight para preencher o espaço disponível de forma mais eficiente.
+
+2. MainActivity.kt
+
+Erros:
+
+	•	overide foi escrito incorretamente. A palavra correta é override.
+	•	O método setContentView está chamando binding.getRoot de forma incorreta. O correto é binding.root.
+	•	O método clear() não existe para o EditText. O correto seria text.clear().
+	•	Faltou uma chamada ao layoutManager para o RecyclerView.
+
+Correção:
+
+package com.example.errorlearning
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.errorlearning.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: CustomAdapter
+    private val itemList = mutableListOf<String>()
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        adapter = CustomAdapter(itemList)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
+        
+        binding.addButton.setOnClickListener {
+            val name = binding.inputName.text.toString()
+            if (name.isNotBlank()) {
+                itemList.add(name)
+                adapter.notifyDataSetChanged()
+                binding.inputName.text.clear() // Corrigido
+            }
+        }
+    }
+}
+
+Explicação:
+
+	•	O modificador override foi corrigido para que a função seja sobrescrita corretamente.
+	•	O método binding.root agora está sendo chamado corretamente em vez de getRoot(), que não existe.
+	•	A função clear() foi aplicada ao text do EditText (binding.inputName.text.clear()).
+
+3. CustomAdapter.kt
+
+Erros:
+
+	•	O LayoutInflater.inflate() foi utilizado incorretamente. Ele deveria ser chamado através de um objeto LayoutInflater.
+	•	O parâmetro de tipo da RecyclerView.Adapter deveria ser um MutableList se você está alterando os dados dinamicamente.
+	•	Falta o modificador var na textView dentro da ViewHolder para acessar a variável.
+
+Correção:
+
+package com.example.errorlearning
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+
+class CustomAdapter(private val items: MutableList<String>): RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = items[position]
+        holder.textView.text = item
+    }
+
+    override fun getItemCount() = items.size
+
+    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val textView: TextView = itemView.findViewById(R.id.textViewItem)
+    }
+}
+
+Explicação:
+
+	•	O método LayoutInflater.from() agora está sendo utilizado corretamente para inflar o layout.
+	•	A lista items foi convertida em um MutableList para permitir a manipulação dinâmica da lista.
+	•	O textView foi declarado corretamente como uma propriedade val dentro do ViewHolder.
+
+4. item_layout.xml
+
+Erros:
+
+	•	O layout_width e o layout_height estavam mal definidos, o que pode causar falhas de exibição.
+
+Correção:
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textViewItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+Explicação:
+
+	•	O layout_width e layout_height foram ajustados para garantir que o item preencha a tela corretamente no RecyclerView.
+
+Resumo dos principais erros corrigidos:
+
+	1.	Problemas com o layout e tamanhos incorretos nos arquivos XML.
+	2.	Uso incorreto de métodos em Kotlin, como override e getRoot().
+	3.	Manipulação incorreta do RecyclerView.Adapter, incluindo inicialização de listas e métodos de LayoutInflater.
+	4.	Problemas com a manipulação de elementos de interface, como clear() em EditText.
+
+Agora, o código está funcional e pronto para rodar, permitindo que você veja o comportamento correto após as correções!
